@@ -3,6 +3,9 @@
 *.xcworkspace
 xcuserdata/
 
+*/.vs
+spinningSquareExample/bin
+
 build/
 obj/
 *.o

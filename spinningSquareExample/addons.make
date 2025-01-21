@@ -1,0 +1,4 @@
+ofxMSAInteractiveObject
+ofxXmlSettings
+ofxSimpleGuiToo
+ofxPuffersphere

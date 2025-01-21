@@ -47,11 +47,13 @@ class ofxPuffersphereObject
 	
 	void setup(float dimenions = 1050);
 	void draw();
-	
+	void update();
+
 	void setTexture(ofBaseHasTexture* newTexture);
 	
 	void loadImage(string filename);
 	void loadVideo(string filename);
+	void fadeToVideo ( string filename, int millis );
 
 	ofVec2f targetSize;
 	ofQuaternion rotation;
@@ -60,10 +62,13 @@ class ofxPuffersphereObject
     
 	ofFloatColor tint; // can be used to fade object out
 	ofVec2f scale;
+
+	string filenameNextContent;
+	float targetAlpha, alpha, oneStep;
 	
   private:
 	bool isTransparent();
-	bool textureIsOurs; //flagged true if we created the texture, so we know to destroy it
+	bool textureIsOurs, isVideo; //flagged true if we created the texture, so we know to destroy it
 	vector<ofVec2f> canvasCoords;
 //	string isA;	// remember the original type of the object.
 };

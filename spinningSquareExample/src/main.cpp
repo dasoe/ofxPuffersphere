@@ -1,24 +1,18 @@
 #include "ofMain.h"
-#include "testApp.h"
-#include "ofAppGlutWindow.h"
+#include "ofApp.h"
 
 //========================================================================
-int main( ){
+int main() {
 
-    ofAppGlutWindow window;
+	//Use ofGLFWWindowSettings for more options like multi-monitor fullscreen
+	ofGLWindowSettings settings;
+	settings.setSize( 1024, 768 );
+	settings.windowMode = OF_WINDOW; //can also be OF_FULLSCREEN
 
-	//JG enable multisampling on OS X
-	window.displayString = "rgba double samples>=4 depth";
+	auto window = ofCreateWindow( settings );
 
-
-	ofSetupOpenGL(&window, 1050, 1050, OF_WINDOW);			// <-------- setup the GL context
-
-	// this kicks off the running of my app
-	// can be OF_WINDOW or OF_FULLSCREEN
-	// pass in width and height too:
-	ofRunApp( new testApp());
-
+	ofRunApp( window, make_shared<ofApp>() );
+	ofRunMainLoop();
 
 }
-
 

@@ -1,8 +1,9 @@
-ofxPuffersphere
+## ofxPuffersphere
 
-Rough framework for working with Pufferfish's Puffersphere projectors.
+Old project of from Flightphase (** Thanks, Man! **). Forked to use with OF 0.12 and adapted a bit.
+
+
+### Rough framework for working with Pufferfish's Puffersphere projectors. 
 
 This library is geared towards making it easy to display arbitrary assets on the display with correct distortion. It works with rotations using quaternion geometry.
-
-Examples coming soon!
 

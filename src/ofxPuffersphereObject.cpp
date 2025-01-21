@@ -64,7 +64,44 @@ void ofxPuffersphereObject::setup(float dimenions){
 	canvasCoords.push_back(ofVec2f(targetSize.x,0));
 	canvasCoords.push_back(ofVec2f(targetSize.x,targetSize.y));
 	canvasCoords.push_back(ofVec2f(0,targetSize.y));
+
+	alpha = 255;
+	targetAlpha = 255;
+	oneStep = 10;
 }
+
+
+void ofxPuffersphereObject::update () {
+	if ( image && isVideo ) {
+		ofVideoPlayer* vid = ( ofVideoPlayer* ) image;
+		//      vid->play();        // I have to uncomment this for it to work!  
+		vid->update ();
+	}
+
+	// fading
+	if ( targetAlpha != alpha ) {
+		if ( targetAlpha < alpha ) {
+			alpha -= oneStep;
+			//cout << " - " << alpha << "|" << targetAlpha;
+			if ( alpha - targetAlpha <= oneStep ) {
+				ofLogVerbose ("fade reached 0; load new video");
+				alpha = targetAlpha;
+				loadVideo ( filenameNextContent );
+				targetAlpha = 255;
+			}
+		}
+		else if ( targetAlpha > alpha ) {
+			//cout << " + " << alpha << "|" << targetAlpha;
+			alpha += oneStep;
+			if ( targetAlpha - alpha <= oneStep ) {
+				ofLogVerbose ( "fade reached 100%; DONE" );
+				alpha = targetAlpha;
+			}
+		}
+		tint = ofFloatColor ( 255,255,255, alpha/255 );
+	}
+}
+
 
 void ofxPuffersphereObject::draw(){
 
@@ -84,7 +121,7 @@ void ofxPuffersphereObject::draw(){
 
 	//should be 2:1, like 2100x1050 since the puffersphere we are working with draws to 1050x1050
 	offaxis->setUniform2f("canvasDimensions", targetSize.x, targetSize.y);
-	offaxis->setUniform2f("textureDimensions", image->getTextureReference().getWidth(), image->getTextureReference().getHeight());
+	offaxis->setUniform2f("textureDimensions", image->getTexture().getWidth(), image->getTexture().getHeight());
 	offaxis->setUniform2f("textureScale", scale.x, scale.y);
 
 	ofVec4f quatVec = rotation.asVec4();
@@ -101,9 +138,9 @@ void ofxPuffersphereObject::draw(){
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(ofVec2f), &(canvasCoords[0]).x);
 
-	image->getTextureReference().bind();
+	image->getTexture().bind();
 	glDrawArrays(GL_QUADS, 0, 4);
-	image->getTextureReference().unbind();
+	image->getTexture().unbind();
 
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -112,17 +149,20 @@ void ofxPuffersphereObject::draw(){
 	offaxis->end();
 }
 
+
 void ofxPuffersphereObject::setTexture(ofBaseHasTexture* newTexture){
 	if(image != NULL && textureIsOurs){
 		delete image;
 	}
 	image = newTexture;
+	isVideo = false;
 	textureIsOurs = false;
 }
 
 void ofxPuffersphereObject::loadImage(string filename){
 	if(textureIsOurs && image != NULL){
 		delete image;
+		isVideo = false;
 		image = NULL;
 	}
 
@@ -133,6 +173,7 @@ void ofxPuffersphereObject::loadImage(string filename){
 	}
 	else{
 		textureIsOurs = true;
+		isVideo = false;
 		image = newimage;
 	}
 }
@@ -145,14 +186,25 @@ void ofxPuffersphereObject::loadVideo(string filename){
 	ofVideoPlayer* newvideo = new ofVideoPlayer();
 	if(!newvideo->loadMovie(filename)){
 		ofLog(OF_LOG_ERROR, "ofxPuffersphere --- video couldn't load! " + filename);
+		isVideo = false;
 		delete newvideo;
 	}
 	else{
 		textureIsOurs = true;
 		ofLog(OF_LOG_VERBOSE, "ofxPuffersphere --- video loaded successfully.");
+		newvideo->play();
+		isVideo = true;
 		image = newvideo;
 	}
 }
+
+void ofxPuffersphereObject::fadeToVideo ( string filename, int millis ) {
+	ofLogVerbose ( "fade , then next video: " + filename );
+
+	filenameNextContent = filename;
+	targetAlpha = 0;
+}
+
 
 
 

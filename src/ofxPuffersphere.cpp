@@ -65,7 +65,7 @@ void ofxPuffersphere::setup(float s){
 
 #ifdef USE_SIMPLE_GUI
 void ofxPuffersphere::addGuiParams(string paramXMLPath){
-	ofxSimpleGuiPage& pufferpage = gui.addPage("Custom Pufferspher Settings");
+	ofxSimpleGuiPage& pufferpage = gui.addPage("Custom Puffersphere Settings");
 	if(paramXMLPath != ""){
 		pufferpage.setXMLName(paramXMLPath);
 	}
@@ -137,7 +137,7 @@ void ofxPuffersphere::renderAllObjects(){
 
 }
 
-void ofxPuffersphere::draw(){
+void ofxPuffersphere::draw( int width, int height ){
 	ofPushStyle();
 	ofSetColor(255);
 	//draws for puffersphere as target
@@ -149,7 +149,7 @@ void ofxPuffersphere::draw(){
 		spherize.setUniform3f("lensCorr", sphereShaderSettings.shaderLensCorrection.x,sphereShaderSettings.shaderLensCorrection.y,sphereShaderSettings.shaderLensCorrection.z);
 		
 		//centered
-		canvas.draw(ofGetWidth()/2.-canvas.getWidth()/2., ofGetHeight()/2.-canvas.getHeight()/2.);
+		canvas.draw( width /2.-canvas.getWidth()/2., height /2.-canvas.getHeight()/2.);
 		spherize.end();
 	}
 	//draw flat for preview on screen
@@ -170,7 +170,7 @@ float ofxPuffersphere::getSize(){
 void ofxPuffersphere::drawSphere(ofVec3f position, float scale){
 
     float radius = scale;
-	int segments = 100;
+	const int segments = 100;
 
 	// tig: this was lifted from Cinder.
 	// https://github.com/cinder/Cinder/blob/master/src/cinder/gl/gl.cpp
@@ -209,7 +209,7 @@ void ofxPuffersphere::drawSphere(ofVec3f position, float scale){
 			e.x = cos( theta1 ) * cos( theta3 );
 			e.y = sin( theta1 );
 			e.z = cos( theta1 ) * sin( theta3 );
-			p = e * radius + position;
+			p = ( e * radius ) + position;
 			normals[i*3*2+0] = e.x; normals[i*3*2+1] = e.y; normals[i*3*2+2] = e.z;
 			texCoords[i*2*2+0] = (1.0 - (i / (float)segments))*canvas.getWidth();
             texCoords[i*2*2+1] = (0.999f - 2 * j / (float)segments)*canvas.getHeight();
@@ -218,7 +218,7 @@ void ofxPuffersphere::drawSphere(ofVec3f position, float scale){
 			e.x = cos( theta2 ) * cos( theta3 );
 			e.y = sin( theta2 );
 			e.z = cos( theta2 ) * sin( theta3 );
-			p = e * radius + position;
+			p = ( e * radius ) + position;
 			normals[i*3*2+3] = e.x; normals[i*3*2+4] = e.y; normals[i*3*2+5] = e.z;
 			texCoords[i*2*2+2] = (1.0 - (i / (float)segments)) * canvas.getWidth();
             texCoords[i*2*2+3] = (0.999f - 2 * ( j + 1 ) / (float)segments) * canvas.getHeight();
@@ -238,3 +238,14 @@ void ofxPuffersphere::drawSphere(ofVec3f position, float scale){
 
 
 }
+
+void ofxPuffersphere::drawSphereOFStyle(ofVec3f position, float scale) {
+	float radius = scale;
+	const int segments = 100;
+	//canvas.getTextureReference(0).bind();
+	ofColor(PURPLE);
+	ofDrawSphere(radius);
+	//canvas.getTextureReference(0).unbind();
+
+}
+

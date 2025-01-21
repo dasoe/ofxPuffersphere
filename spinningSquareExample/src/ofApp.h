@@ -5,7 +5,7 @@
 #include "ofMain.h"
 #include "ofxPuffersphere.h"
 
-class testApp : public ofBaseApp{
+class ofApp : public ofBaseApp{
 
   public:
 

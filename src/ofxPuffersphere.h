@@ -74,10 +74,13 @@ class ofxPuffersphere
 	void end();
 
 	//use this for drawing to the puffersphere itself
-	void draw();
+	void draw( int width, int height );
 
 	//let's you draw the sphere in 3d space to preview what it will look like on the sphere
 	void drawSphere(ofVec3f position, float scale = 100);
+	void drawSphereOFStyle(ofVec3f position, float scale = 100);
+
+	
 
 	string spherizeLocation;
 	string offaxisLocation;
