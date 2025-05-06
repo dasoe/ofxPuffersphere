@@ -202,6 +202,9 @@ void ofxPuffersphere::drawSphere(ofVec3f position, float scale){
 		float theta1 = j * 2 * 3.14159f / segments - ( 3.14159f / 2.0f );
 		float theta2 = (j + 1) * 2 * 3.14159f / segments - ( 3.14159f / 2.0f );
 
+		// Mirror vertical axis:
+		// for( int i = segments; i >= 0; i-- ) {
+
 		for( int i = 0; i <= segments; i++ ) {
 			ofVec3f e, p;
 			float theta3 = i * 2 * 3.14159f / segments;
