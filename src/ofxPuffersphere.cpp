@@ -53,9 +53,10 @@ ofxPuffersphere::~ofxPuffersphere(){
 	objects.clear();
 }
 
-void ofxPuffersphere::setup(float s){
+void ofxPuffersphere::setup(float s, float canvasHeight ){
 	size = s;
-	canvas.allocate(size*2, size, GL_RGBA);
+	// oeChanged. Hack. As our Canvas height is bigger than our video height, we added second parameter 'canvasHeight'. It is used ony here in the allocation of the canvas
+	canvas.allocate(size*2, canvasHeight, GL_RGBA);
 
 	//TODO: collapse shaders into one
 	offaxis.load(offaxisLocation);	 
