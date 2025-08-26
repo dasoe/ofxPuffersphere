@@ -53,10 +53,15 @@ ofxPuffersphere::~ofxPuffersphere(){
 	objects.clear();
 }
 
-void ofxPuffersphere::setup(float s, float canvasHeight ){
+void ofxPuffersphere::setup(float s, ofVec2f _firstMonitorSize ){
 	size = s;
-	// oeChanged. Hack. As our Canvas height is bigger than our video height, we added second parameter 'canvasHeight'. It is used ony here in the allocation of the canvas
-	canvas.allocate(size*2, canvasHeight, GL_RGBA);
+	// oeChanged. Hack. As our Canvas height is bigger than our video height, we added second parameter '_firstMonitorSize'. 
+	// It is used for scaling in ofxPuffersphere::draw()
+	firstMonitorSize = _firstMonitorSize;
+	canvas.allocate(size*2, size, GL_RGBA);
+
+	scaleValue = firstMonitorSize.y / canvas.getHeight ();
+
 
 	//TODO: collapse shaders into one
 	offaxis.load(offaxisLocation);	 
@@ -143,6 +148,19 @@ void ofxPuffersphere::draw( int width, int height ){
 	ofSetColor(255);
 	//draws for puffersphere as target
 	if(renderForPuffersphere){
+		ofPushMatrix ();
+
+		// both values of scale have to be the same!
+		//ofLogNotice ( ofToString ( scaleValue  ) );
+		//ofLogNotice ( ofToString ( ( canvas.getWidth () * scaleValue ) ) );
+		//ofLogNotice ( ofToString ( canvas.getWidth () ) );
+		//ofLogNotice ( ofToString ( firstMonitorSize.x ) );
+		//ofLogNotice ("----");
+
+		// scale (scale Value is calculated in setup.
+		// this means mapping to height of screen
+		ofScale ( scaleValue );
+
 		spherize.begin();
 		spherize.setUniform2f("imageSize", float(canvas.getWidth()), float(canvas.getHeight()));
 		spherize.setUniform1f("fov", sphereShaderSettings.fov);
@@ -150,9 +168,29 @@ void ofxPuffersphere::draw( int width, int height ){
 		spherize.setUniform3f("lensCorr", sphereShaderSettings.shaderLensCorrection.x,sphereShaderSettings.shaderLensCorrection.y,sphereShaderSettings.shaderLensCorrection.z);
 		
 		//centered
-		canvas.draw( width /2.-canvas.getWidth()/2., height /2.-canvas.getHeight()/2.);
+		//canvas.draw( ( width /2.-canvas.getWidth()/2.), (height /2.-canvas.getHeight()/2.) );
+
+		// thanks to the scaling, we can just draw on y 0, as height now is mapped to screen height.
+		// x, though, has to be moved, as canvas is broader than screen 1
+		float moveX2 = ( ( ( canvas.getWidth () * scaleValue ) -  firstMonitorSize.x ) /2  );
+		//ofLogNotice ( ofToString ( moveX2 ) );
+		//ofLogNotice ( ofToString ( moveX2 / scaleValue ) );
+		//ofLogNotice ( ofToString ( moveX2 * scaleValue ) );
+		//ofLogNotice ( "----" );
+
+		// now move it. But do not forget we are in scaled space!
+		if ( scaleValue >= 1. ) {
+			canvas.draw ( -moveX2 * scaleValue, 0 );
+		}
+		else {
+			// not quite sure about this actually.
+			canvas.draw ( -moveX2 / scaleValue, 0 );
+		}
 		spherize.end();
-	}
+		ofPopMatrix ();
+
+	}		
+
 	//draw flat for preview on screen
 	else {
 		ofPushMatrix();

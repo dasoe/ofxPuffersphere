@@ -59,8 +59,7 @@ class ofxPuffersphere
 	ofxPuffersphere();
 	~ofxPuffersphere();
 
-	// oeChanged. Hack. As our Canvas height is bigger than our video height, we added second parameter 'canvasHeight'. It is used ony here in the allocation of the canvas
-	void setup(float size = 1050, float canvasSize = 1050 ); //some are 1050, some are 1080
+	void setup(float size = 1050, ofVec2f _firstMonitorSize = ofVec2f( 3000,1050 ) ); //some are 1050, some are 1080
 
 	#ifdef USE_SIMPLE_GUI
 	void addGuiParams(string paramXMLPath = "");
@@ -104,9 +103,11 @@ class ofxPuffersphere
 	bool renderForPuffersphere;
 
 	float size;
+	float scaleValue; 
+	float helperRotation;
 	ofShader offaxis;
 	ofShader spherize;
-
+	ofVec2f firstMonitorSize;
 	SpherizeShaderParams sphereShaderSettings;
 
 	vector<ofxPuffersphereObject*> objects;
