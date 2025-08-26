@@ -104,7 +104,6 @@ class ofxPuffersphere
 
 	float size;
 	float scaleValue; 
-	float helperRotation;
 	ofShader offaxis;
 	ofShader spherize;
 	ofVec2f firstMonitorSize;

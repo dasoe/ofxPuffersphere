@@ -62,7 +62,6 @@ void ofxPuffersphere::setup(float s, ofVec2f _firstMonitorSize ){
 
 	scaleValue = firstMonitorSize.y / canvas.getHeight ();
 
-
 	//TODO: collapse shaders into one
 	offaxis.load(offaxisLocation);	 
  	spherize.load(spherizeLocation);
@@ -149,14 +148,6 @@ void ofxPuffersphere::draw( int width, int height ){
 	//draws for puffersphere as target
 	if(renderForPuffersphere){
 		ofPushMatrix ();
-
-		// both values of scale have to be the same!
-		//ofLogNotice ( ofToString ( scaleValue  ) );
-		//ofLogNotice ( ofToString ( ( canvas.getWidth () * scaleValue ) ) );
-		//ofLogNotice ( ofToString ( canvas.getWidth () ) );
-		//ofLogNotice ( ofToString ( firstMonitorSize.x ) );
-		//ofLogNotice ("----");
-
 		// scale (scale Value is calculated in setup.
 		// this means mapping to height of screen
 		ofScale ( scaleValue );
@@ -167,17 +158,12 @@ void ofxPuffersphere::draw( int width, int height ){
 		spherize.setUniform1f("Z", sphereShaderSettings.Z);
 		spherize.setUniform3f("lensCorr", sphereShaderSettings.shaderLensCorrection.x,sphereShaderSettings.shaderLensCorrection.y,sphereShaderSettings.shaderLensCorrection.z);
 		
-		//centered
+		//centered draw: old version
 		//canvas.draw( ( width /2.-canvas.getWidth()/2.), (height /2.-canvas.getHeight()/2.) );
 
 		// thanks to the scaling, we can just draw on y 0, as height now is mapped to screen height.
 		// x, though, has to be moved, as canvas is broader than screen 1
 		float moveX2 = ( ( ( canvas.getWidth () * scaleValue ) -  firstMonitorSize.x ) /2  );
-		//ofLogNotice ( ofToString ( moveX2 ) );
-		//ofLogNotice ( ofToString ( moveX2 / scaleValue ) );
-		//ofLogNotice ( ofToString ( moveX2 * scaleValue ) );
-		//ofLogNotice ( "----" );
-
 		// now move it. But do not forget we are in scaled space!
 		if ( scaleValue >= 1. ) {
 			canvas.draw ( -moveX2 * scaleValue, 0 );
